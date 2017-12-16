@@ -31,19 +31,21 @@
 	<meta name="generator" content="Geany 1.23.1" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<style>
-		table, th, td {
+		table {
 			border: 1px solid black;
+			border-radius: 6px;
 		}
 		
-		th, td {
+		/*th, td {
 			padding: 15px;
 			text-align: left;
-		}
+		}*/
 		
 		th {
 			background-color: #4CAF50;
 			color: white;
 		}
+
 		
 		.btn-red{
 			background-color: red;
@@ -62,6 +64,20 @@
 		#main{
 			margin-left:auto;
 		}
+
+		button{
+			width: 100%;
+		    
+    		text-align: center;
+    		border-radius:6px;
+    		text-decoration: none;
+		}
+
+		#display{
+			background-color: #c3c2a;
+			border: 2px solid #b4b39d;
+    		border-radius: 6px;
+		}
 	</style>
 </head>
 
@@ -78,40 +94,167 @@
 			
 				<tr>
 					<td colspan="4">
-						<input type="text" style="text-align: right;" value="0"/>
+						<input id="display" type="text" style="text-align: right;" value="0"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="btn-red">AC</td>
-					<td class="btn-red">CE</td>
-					<td>/</td>
-					<td>*</td>
+					<td><button id="btn-ac" class="btn-red">AC</button></td>
+					<td><button id="btn-ce" class="btn-red">CE</button></td>
+					<td><button id="btn-div">/</button></td>
+					<td><button id="btn-mul">*</button></td>
 				</tr>
 				<tr>
-					<td>7</td>
-					<td>8</td>
-					<td>9</td>
-					<td>-</td>
+					<td><button id="btn-seven">7</button></td>
+					<td><button id="btn-eigth">8</button></td>
+					<td><button id="btn-nine">9</button></td>
+					<td><button id="btn-minus">-</button></td>
 				</tr>
 				<tr>
-					<td>4</td>
-					<td>5</td>
-					<td>6</td>
-					<td>+</td>
+					<td><button id="btn-four">4</button></td>
+					<td><button id="btn-five">5</button></td>
+					<td><button id="btn-six">6</button></td>
+					<td><button id="btn-plus">+</button></td>
 				</tr>
 				<tr>
-					<td>1</td>
-					<td>2</td>
-					<td>3</td>
-					<td rowspan="2">=</td>
+					<td><button id="btn-one">1</button></td>
+					<td><button id="btn-two">2</button></td>
+					<td><button id="btn-three">3</button></td>
+					<td rowspan="2"><button id="btn-equals" style="height: 45px;">=</button></td>
 				</tr>
 				<tr>
-					<td colspan="2">0</td>
-					<td>.</td>			
+					<td colspan="2"><button id="btn-zero">0</button></td>
+					<td><button id="btn-dot">.</button></td>			
 				</tr>
 			</tbody>
 		</table>
 	</div>
+
+	<script type="text/javascript">
+
+		var operation = "";
+		var number1 = 0;
+		var number2 = 0;
+		var result = 0;
+		var newNumber = false;
+
+		function setText(t){
+
+			if(t=="." && $("#display").val().indexOf(".")<0){
+				curr = $("#display").val();
+				$("#display").val(curr+t);
+				return;
+			}
+
+			if($("#display").val()==0 || newNumber){
+				$("#display").val(t);
+				newNumber = false;
+			}else{
+				curr = $("#display").val();
+				$("#display").val(curr+t);
+			}
+			
+		};
+
+		function setNumber1(){
+			number1 = Number($("#display").val());
+			newNumber = true;
+		};
+
+		$(function(){
+
+			$("#btn-one").click(function(){
+				setText("1");
+			});
+			$("#btn-two").click(function(){
+				setText("2");
+			});
+			$("#btn-three").click(function(){
+				setText("3");
+			});
+			$("#btn-four").click(function(){
+				setText("4");
+			});
+			$("#btn-five").click(function(){
+				setText("5");
+			});
+			$("#btn-six").click(function(){
+				setText("6");
+			});
+			$("#btn-seven").click(function(){
+				setText("7");
+			});
+			$("#btn-eigth").click(function(){
+				setText("8");
+			});
+			$("#btn-nine").click(function(){
+				setText("9");
+			});
+			$("#btn-zero").click(function(){
+				setText("0");
+			});
+
+
+			//operations
+
+			$("#btn-minus").click(function(){
+				operation = "-";
+				setNumber1();
+			});
+
+			$("#btn-plus").click(function(){
+				operation = "+";
+				setNumber1();
+			});
+
+			$("#btn-mul").click(function(){
+				operation = "*";
+				setNumber1();
+			});
+
+			$("#btn-div").click(function(){
+				operation = "/";
+				setNumber1();
+			});
+
+			//others
+
+			$("#btn-ac").click(function(){
+				$("#display").val(0);
+			});
+
+			$("#btn-ce").click(function(){
+				$("#display").val(0);
+			});
+
+			$("#btn-dot").click(function(){
+				setText(".");
+			});
+
+			$("#btn-equals").click(function(){
+				number2 = Number($("#display").val());
+				newNumber = true;
+
+				switch(operation) {
+					case "/":
+						$("#display").val(number1/number2);
+						break;
+					case "*":
+						$("#display").val(number1*number2);
+						break;
+					case "-":
+						$("#display").val(number1-number2);
+						break;
+					case "+":
+						$("#display").val(number1+number2);
+						break;
+				}
+			});			
+
+		});
+	</script>
+
 </body>
+
+
 
 </html>
