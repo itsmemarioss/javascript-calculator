@@ -29,23 +29,31 @@
 	<title>JavaScript Calculator</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<meta name="generator" content="Geany 1.23.1" />
+	<link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 	<style>
-		table {
-			border: 1px solid black;
-			border-radius: 6px;
-		}
 		
-		/*th, td {
-			padding: 15px;
-			text-align: left;
-		}*/
-		
-		th {
-			background-color: #4CAF50;
-			color: white;
+		*{
+			font-family: monospace;
 		}
 
+		table {
+			border: 0px solid black;
+			border-radius: 6px;
+
+		}
+
+		#by {
+			margin-top: 15px;
+			font-family: 'Indie Flower', cursive;
+			text-align: center;
+		}
+		
+		th {
+			
+			color: white;
+		}
 		
 		.btn-red{
 			background-color: red;
@@ -53,7 +61,7 @@
 		}
 
 		table.center {
-			margin-top:50px;
+			margin-top:20px;
 			margin-left:auto; 
 			margin-right:auto;
 			border-collapse: collapse;
@@ -63,6 +71,15 @@
 		
 		#main{
 			margin-left:auto;
+			border-radius: 25px;
+			padding: 5px 10px;
+			background-color: #35400899;
+			margin-left: auto;
+			margin-right: auto;
+			width: 180px;
+    		height: 200px; 
+    		box-shadow: 5px 9px 3px rgba(0, 0, 0, 0.47);
+    		
 		}
 
 		button{
@@ -127,38 +144,96 @@
 				</tr>
 			</tbody>
 		</table>
+
+
 	</div>
+
+	<div id="by"> by <a href="https://github.com/sharpmario" target="_blank" > Mário S. Sousa</a></div>
 
 	<script type="text/javascript">
 
-		var operation = "";
+		var operation = undefined;
 		var number1 = 0;
 		var number2 = 0;
 		var result = 0;
 		var newNumber = false;
 
 		function setText(t){
+			
+						
+			if( (t=="." && $("#display").val().indexOf(".")<0) || (operation=="-" && number1 == 0) ){
 
-			if(t=="." && $("#display").val().indexOf(".")<0){
+				if(operation=="-" && $("#display").val().indexOf("-")<0){
+					t = operation+t;
+					if($("#display").val()=="0" ){
+						$("#display").val("");
+					}
+				}
+
 				curr = $("#display").val();
 				$("#display").val(curr+t);
 				return;
 			}
-
-			if($("#display").val()==0 || newNumber){
-				$("#display").val(t);
-				newNumber = false;
+			
+			if(newNumber){
+				$("#display").val(Number(t));
 			}else{
 				curr = $("#display").val();
-				$("#display").val(curr+t);
+				$("#display").val(Number(curr+t));
 			}
+			
+			
+		};
+		
+		function clearDisplay(){
+			$("#display").val(0);
+		};
+		
+		function clearAll(){
+			clearDisplay();
+			operation = undefined;
+			number1 = 0;
+			number2 = 0;
+			result = 0;
+			newNumber = false;
+		};
+
+		function getNumber(){
+			return Number($("#display").val());
+		};
+
+		function operationInProgress(){
+			return operation != undefined && (operation != "-" && number1 != 0);
+		};
+
+		function setOprerationAndNumber(op){
+
+			if(operationInProgress()){
+				
+				number2 = getNumber();
+				number1 = doMath();
+				operation = op;
+				
+			}else{
+				number1 = getNumber();
+				operation = op;
+				newNumber = true;	
+			}			
 			
 		};
 
-		function setNumber1(){
-			number1 = Number($("#display").val());
-			newNumber = true;
-		};
+		function doMath(){
+			switch(operation) {
+				case "/":
+					return number1/number2;
+				case "*":
+					return number1*number2;
+				case "-":
+					return number1-number2;
+				case "+":
+					return number1+number2;
+			}
+		}
 
 		$(function(){
 
@@ -193,37 +268,35 @@
 				setText("0");
 			});
 
-
 			//operations
-
 			$("#btn-minus").click(function(){
-				operation = "-";
-				setNumber1();
+				
+				setOprerationAndNumber("-");
 			});
 
 			$("#btn-plus").click(function(){
-				operation = "+";
-				setNumber1();
+				
+				setOprerationAndNumber("+");
 			});
 
 			$("#btn-mul").click(function(){
-				operation = "*";
-				setNumber1();
+				
+				setOprerationAndNumber("*");
 			});
 
 			$("#btn-div").click(function(){
-				operation = "/";
-				setNumber1();
+				
+				setOprerationAndNumber("/");
 			});
 
 			//others
 
 			$("#btn-ac").click(function(){
-				$("#display").val(0);
+				clearAll();
 			});
 
 			$("#btn-ce").click(function(){
-				$("#display").val(0);
+				clearDisplay();
 			});
 
 			$("#btn-dot").click(function(){
@@ -231,23 +304,12 @@
 			});
 
 			$("#btn-equals").click(function(){
-				number2 = Number($("#display").val());
-				newNumber = true;
+				number2 = getNumber();
 
-				switch(operation) {
-					case "/":
-						$("#display").val(number1/number2);
-						break;
-					case "*":
-						$("#display").val(number1*number2);
-						break;
-					case "-":
-						$("#display").val(number1-number2);
-						break;
-					case "+":
-						$("#display").val(number1+number2);
-						break;
-				}
+				$("#display").val(doMath());
+
+				newNumber = true;
+				operation = undefined;
 			});			
 
 		});
